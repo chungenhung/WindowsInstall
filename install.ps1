@@ -16,68 +16,81 @@ powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('https://git.io
 $tweaks = @(
 	### Require administrator privileges ###
 	#"RequireAdmin", #This does NOT work
-	"InstallPrograms"
+	"InstallPrograms",
+	"DebloatAll"
 )
 
-# Relaunch the script with administrator privileges
-#This does NOT work. 
-Function RequireAdmin {
-	If (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]"Administrator")) {
-		Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" $PSCommandArgs" -WorkingDirectory $pwd -Verb RunAs
-		Exit
-	}
-}
 
 Function InstallPrograms {
 	Write-Output "Executing Function InstallPrograms"
 
-	Write-Output "Installing Chocolatey"
-	Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
-	choco install chocolatey-core.extension -y
-
-	Write-Output "Install these Visual C++ Redistributable Packages first. Because some programs require it"
-	<#
-	This includes:
-	- vcredist2012 v11.0.61031
-	- kb3033929 v1.0.5
-	- kb2999226 v1.0.20181019
-	- vcredist2005 v8.1.0.20160118
-	- vcredist2015 v14.0.24215.20170201
-	- vcredist2008 v9.0.30729.6163
-	- vcredist2010 v10.0.40219.2
-	- vcredist-all v1.0.0
-	- vcredist2017 v14.16.27033
-	- vcredist140 v14.26.28720.3
-	- kb3035131 v1.0.3
-	- chocolatey-windowsupdate.extension v1.0.4
-	#>
-	Write-Output "Microsoft Visual C++ Runtime - all versions 1.0.0"
-	choco install vcredist-all -y
-
-	#This no longer needed. It is already included in the above script.
-	#Write-Output "Installing Visual C++ Redistributable Packages for Visual Studio 2013 12.0.40660.20180427"
-	#choco install vcredist2013 -y
-
-	Write-Output "Installing 7-Zip"
-	choco install 7zip -y
-	
-	Write-Output "Installing Adobe Acrobat Reader"
-	choco install adobereader -y
-	
-	Write-Output "Installing Audacity"
-	choco install audacity -y
-	
-	Write-Output "Installing Brave Browser"
-	choco install brave -y
-	
-	Write-Output "Pause 10 seconds for Brave Browser to start"
-	Start-Sleep -Seconds 10
-	
-	Write-Output "Closing Brave Browser"
-	Stop-Process -Name "Brave" -Force
+	Write-Output "Installing FFmpeg for Audacity 2.2.2.20181007. Do NOT install version newer than 2.2.2"
+	choco install audacity-ffmpeg -y
 
 }
 
+Function DebloatAll {
+    $Bloatware = @(
+        #Unnecessary Windows 10 AppX Apps
+        "Microsoft.BingNews"
+        "Microsoft.GetHelp"
+        "Microsoft.Getstarted"
+        "Microsoft.Messaging"
+        "Microsoft.Microsoft3DViewer"
+        "Microsoft.MicrosoftSolitaireCollection"
+        "Microsoft.NetworkSpeedTest"
+        "Microsoft.News"
+        "Microsoft.Office.Lens"
+        "Microsoft.Office.Sway"
+        "Microsoft.OneConnect"
+        "Microsoft.People"
+        #"Microsoft.Print3D"
+        #"Microsoft.SkypeApp"
+        "Microsoft.StorePurchaseApp"
+        "Microsoft.Whiteboard"
+        "Microsoft.WindowsAlarms"
+        "microsoft.windowscommunicationsapps"
+        "Microsoft.WindowsFeedbackHub"
+        "Microsoft.WindowsMaps"
+        "Microsoft.WindowsSoundRecorder"
+        "Microsoft.ZuneMusic"
+        "Microsoft.ZuneVideo"
+
+        #Sponsored Windows 10 AppX Apps
+        #Add sponsored/featured apps to remove in the "*AppName*" format
+        "*EclipseManager*"
+        "*ActiproSoftwareLLC*"
+        "*AdobeSystemsIncorporated.AdobePhotoshopExpress*"
+        "*Duolingo-LearnLanguagesforFree*"
+        "*PandoraMediaInc*"
+        "*CandyCrush*"
+        "*BubbleWitch3Saga*"
+        "*Wunderlist*"
+        "*Flipboard*"
+        "*Twitter*"
+        "*Facebook*"
+        "*Spotify*"
+        "*Royal Revolt*"
+        "*Sway*"
+        "*Speed Test*"
+        "*Dolby*"
+             
+        #Optional: Typically not removed but you can if you need to for some reason
+        "*Microsoft.Advertising.Xaml_10.1712.5.0_x64__8wekyb3d8bbwe*"
+        "*Microsoft.Advertising.Xaml_10.1712.5.0_x86__8wekyb3d8bbwe*"
+        "*Microsoft.BingWeather*"
+        #"*Microsoft.MSPaint*"
+        #"*Microsoft.MicrosoftStickyNotes*"
+        #"*Microsoft.Windows.Photos*"
+        #"*Microsoft.WindowsCalculator*"
+        #"*Microsoft.WindowsStore*"
+    )
+    foreach ($Bloat in $Bloatware) {
+        Get-AppxPackage -Name $Bloat| Remove-AppxPackage
+        Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $Bloat | Remove-AppxProvisionedPackage -Online
+        Write-Output "Trying to remove $Bloat."
+    }
+}
 ##########
 # Parse parameters and apply tweaks
 ##########
