@@ -12,15 +12,15 @@ Function RequireAdmin {
 		Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" $PSCommandArgs" -WorkingDirectory $pwd -Verb RunAs
 		Exit
 	}
-	Read-Host -Prompt "Press Enter to continue"
+	Read-Host -Prompt "Msg 1. Press Enter to continue"
 }
 
 Function InstallPrograms {
-	Read-Host -Prompt "Press Enter to continue"
+	Read-Host -Prompt "Msg 2. Press Enter to continue"
 	
 	Write-Output "Executing FUnction InstallPrograms"
 	
-	Read-Host -Prompt "Press Enter to continue"
+	Read-Host -Prompt "Msg 3. Press Enter to continue"
 	
 	Write-Output "Installing Chocolatey"
 	Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
@@ -85,4 +85,4 @@ If ($args) {
 # Call the desired tweak functions
 $tweaks | ForEach { Invoke-Expression $_ }
 
-Read-Host -Prompt "Press Enter to continue"
+Read-Host -Prompt "Msg 4. Press Enter to continue"
