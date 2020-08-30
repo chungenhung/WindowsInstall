@@ -14,15 +14,37 @@ powershell -nop -c "iex(New-Object Net.WebClient).DownloadString('https://git.io
 
 #List of functions that will run.
 $tweaks = @(
-	"EnhanceNetworkPerformance"
+	"DisableNetDevicesAutoInst",  # "EnableNetDevicesAutoInst",
+	#"DisableCtrldFolderAccess",	# "EnableCtrldFolderAccess",
+	# "DisableFirewall",            # "EnableFirewall",
+	#"DisableDefender",            # "EnableDefender",
+	#"DisableDefenderCloud",       # "EnableDefenderCloud",
+	"EnableF8BootMenu",             # "DisableF8BootMenu",
+	#"SetDEPOptOut",                 # "SetDEPOptIn",
+	# "EnableCIMemoryIntegrity",    # "DisableCIMemoryIntegrity",
+	#"DisableScriptHost",            # "EnableScriptHost",
+	#"EnableDotNetStrongCrypto",     # "DisableDotNetStrongCrypto",
+	"DisableMeltdownCompatFlag", # "EnableMeltdownCompatFlag"    
 )
 
-Function EnhanceNetworkPerformance {
-	netsh int ipv4 set dynamicport tcp start=1025 num=64510
-	netsh int ipv4 show dynamicport tcp
+Function DisableNetDevicesAutoInst {
+	Write-Output "Disabling automatic installation of network devices..."
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private")) {
+		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private" -Force | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private" -Name "AutoSetup" -Type DWord -Value 0
+}
 
-	#The path is same as HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters
-	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name "TcpTimedWaitDelay" -Value "30" -PropertyType "DWord"
+# Enable F8 boot menu options
+Function EnableF8BootMenu {
+	Write-Output "Enabling F8 boot menu options..."
+	bcdedit /set `{current`} bootmenupolicy Legacy | Out-Null
+}
+
+# Disable Meltdown (CVE-2017-5754) compatibility flag
+Function DisableMeltdownCompatFlag {
+	Write-Output "Disabling Meltdown (CVE-2017-5754) compatibility flag..."
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\QualityCompat" -Name "cadca5fe-87d3-4b96-b7fb-a231484277cc" -ErrorAction SilentlyContinue
 }
 
 ##########
