@@ -104,13 +104,13 @@ If ($args -And $args[0].ToLower() -eq "-preset") {
 If ($args) {
 	$tweaks = $args
 	If ($preset) {
-		$tweaks = Get-Content $preset -ErrorAction Stop | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne "" -and $_[0] -ne "#" }
+		$tweaks = Get-Content $preset -ErrorAction Stop | ForEach { $_.Trim() } | Where { $_ -ne "" -and $_[0] -ne "#" }
 	}
 }
 
 #>>>>>>> MAIN PROGRAM that will kick start everything >>>>>>>>>>>>>>>>>>>>>>>>>>
 # Call the desired tweak functions
-$tweaks | ForEach-Object { Invoke-Expression $_ }
+$tweaks | ForEach { Invoke-Expression $_ }
 
 pause
 
