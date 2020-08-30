@@ -11,7 +11,7 @@ Function RequireAdmin {
 		Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" $PSCommandArgs" -WorkingDirectory $pwd -Verb RunAs
 		Write-Output "Msg 0."
 		Read-Host -Prompt "Press Enter to continue"
-		Exit
+		#Exit
 	}
 	Write-Output "Msg 1."
 	Read-Host -Prompt "Press Enter to continue"
