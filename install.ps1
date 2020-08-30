@@ -31,7 +31,7 @@ $tweaks = @(
 	"DisableErrorReporting",        # "EnableErrorReporting",
 	"SetP2PUpdateLocal",          # "SetP2PUpdateInternet",
 	"DisableDiagTrack",             # "EnableDiagTrack",
-	"DisableWAPPush",               # "EnableWAPPush",
+	"DisableWAPPush"               # "EnableWAPPush",
 )
 
 # Privacy Tweaks>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
