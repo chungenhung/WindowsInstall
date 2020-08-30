@@ -24,7 +24,7 @@ $tweaks = @(
 	# "EnableCIMemoryIntegrity",    # "DisableCIMemoryIntegrity",
 	#"DisableScriptHost",            # "EnableScriptHost",
 	#"EnableDotNetStrongCrypto",     # "DisableDotNetStrongCrypto",
-	"DisableMeltdownCompatFlag", # "EnableMeltdownCompatFlag"    
+	"DisableMeltdownCompatFlag" # "EnableMeltdownCompatFlag"    
 )
 
 Function DisableNetDevicesAutoInst {
