@@ -1,7 +1,7 @@
 #List of functions that will run.
 $tweaks = @(
 	### Require administrator privileges ###
-	"RequireAdmin",
+	"RequireAdmin"
 	#"InstallPrograms"
 )
 
