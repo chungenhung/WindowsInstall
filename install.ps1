@@ -2,15 +2,17 @@
 $tweaks = @(
 	### Require administrator privileges ###
 	"RequireAdmin",
-	"InstallPrograms"
+	#"InstallPrograms"
 )
 
 # Relaunch the script with administrator privileges
 Function RequireAdmin {
+	Read-Host -Prompt "Press Enter to continue"
 	If (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]"Administrator")) {
 		Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" $PSCommandArgs" -WorkingDirectory $pwd -Verb RunAs
 		Exit
 	}
+	Read-Host -Prompt "Press Enter to continue"
 }
 
 Function InstallPrograms {
